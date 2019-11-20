@@ -1,6 +1,8 @@
 #ifndef CMPE250_ASSIGNMENT3_HELPSTUDENTS_H
 #define CMPE250_ASSIGNMENT3_HELPSTUDENTS_H
 #include <vector>
+#include <iostream>
+#include <fstream>
 
 using namespace std;
 
