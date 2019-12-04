@@ -15,11 +15,16 @@ class HelpStudents{
         int no;
         long long int dist;
         bool isKnown;
+        bool operator<(const Vertex& other) const {
+            if (dist == other.dist)
+                return no>other.no;
+            return dist > other.dist;
+        }
     };
 
 
 public:
-    HelpStudents(int  N, int  M, int K, vector < pair< pair <int,int> , int > > ways);
+    HelpStudents(int  N, int  M, int K, const vector < pair< pair <int,int> , int > >& ways);
     long long int firstStudent();
     long long int secondStudent();
     long long int thirdStudent();

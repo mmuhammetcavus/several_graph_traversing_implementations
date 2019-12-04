@@ -13,7 +13,7 @@ Notes: Anything you want to say about your code that will be helpful in the grad
 
 using namespace std;
 
-HelpStudents::HelpStudents(int  N, int  M, int K, vector < pair< pair <int,int> , int > > ways) {
+HelpStudents::HelpStudents(int  N, int  M, int K, const vector < pair< pair <int,int> , int > >& ways) {
     this->numberOfNodes=N; this->numberOfEdges=M; this->destination=K;
     vertices.resize(numberOfNodes);
     int i=1;
@@ -26,6 +26,9 @@ HelpStudents::HelpStudents(int  N, int  M, int K, vector < pair< pair <int,int> 
     for(auto & pair : ways) {
         Vertex & v=vertices[pair.first.first-1];
         Vertex & w=vertices[pair.first.second-1];
+        int weight=pair.second;
+        v.adj.push_front(weight);
+        w.adj.push_front(weight);
         v.adj.push_front(w.no);
         w.adj.push_front(v.no);
     }
@@ -35,6 +38,34 @@ HelpStudents::HelpStudents(int  N, int  M, int K, vector < pair< pair <int,int> 
 }
 
 long long int HelpStudents::firstStudent() {
+    priority_queue<Vertex> pq;
+    vertices[0].dist=0;
+    pq.push(vertices[0]);
+    bool found=false;
+    while(!found) {
+        Vertex & first=vertices[pq.top().no-1];
+        first.isKnown=true;
+        if(first.no==destination) {
+            found=true;
+            return first.dist;
+        }
+        list<int> ::iterator it;
+        for (it = first.adj.begin(); it != first.adj.end(); it++) {
+            int x=*it;
+            Vertex & w=vertices[x-1];
+            if(!w.isKnown) {
+                it++;
+                long long int newDist=first.dist+*it;
+                if(newDist<w.dist)
+                    w.dist=newDist;
+            }
+        }
+        pq=priority_queue<Vertex>();
+        for(int i=0; i<vertices.size(); i++) {
+            if(!vertices[i].isKnown)
+                pq.push(vertices[i]);
+        }
+    }
     // IMPLEMENT ME!
 }
 long long int HelpStudents::secondStudent() {
@@ -49,7 +80,8 @@ long long int HelpStudents::thirdStudent() {
     while(!q.empty()) {
         Vertex  & v=vertices[q.front().no-1];
         q.pop();
-        for(auto & x : v.adj) {
+        for(list<int> ::iterator it=v.adj.begin(); it!=v.adj.end(); it++) {
+            int x=*it;
             Vertex & w=vertices[x-1];
             if(!w.isKnown) {
                 w.isKnown =true;
@@ -60,6 +92,7 @@ long long int HelpStudents::thirdStudent() {
                 }
                 q.push(w);
             }
+            it++;
         }
     }
         return vertices[0].dist;
