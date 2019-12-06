@@ -10,18 +10,6 @@ using namespace std;
 
 class HelpStudents{
 
-    struct Vertex {
-        list<int> adj;
-        int no;
-        long long int dist;
-        bool isKnown;
-        bool operator<(const Vertex& other) const {
-            if (dist == other.dist)
-                return no>other.no;
-            return dist > other.dist;
-        }
-    };
-
 
 public:
     HelpStudents(int  N, int  M, int K, const vector < pair< pair <int,int> , int > >& ways);
@@ -30,8 +18,9 @@ public:
     long long int thirdStudent();
     long long int fourthStudent();
     long long int fifthStudent();
-    int numberOfNodes, numberOfEdges, destination;
-    vector<Vertex> vertices;
+    bool isPossible(int n, bool isOK[]);
+    int numberOfNodes, destination;
+    list<pair<int ,int>> * adj;
 
 
     // YOU CAN ADD YOUR HELPER FUNCTIONS AND MEMBER FIELDS

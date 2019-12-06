@@ -10,99 +10,116 @@ Notes: Anything you want to say about your code that will be helpful in the grad
 #include <queue>
 #include "HelpStudents.h"
 #include <list>
+#include <set>
 
 using namespace std;
+const long long int INF = numeric_limits<long long int>::max();
+typedef pair<long long int, int> pi;
 
 HelpStudents::HelpStudents(int  N, int  M, int K, const vector < pair< pair <int,int> , int > >& ways) {
-    this->numberOfNodes=N; this->numberOfEdges=M; this->destination=K;
-    vertices.resize(numberOfNodes);
-    int i=1;
-    for(auto & a: vertices) {
-        a.dist=numeric_limits<long long int>::infinity();
-        a.isKnown=false;
-        a.no=i;
-        i++;
+    this->numberOfNodes=N; this->destination=K;
+    this->adj=new list<pair<int ,int>>[numberOfNodes+1];
+    for(auto & x : ways) {
+        adj[x.first.first].emplace_back(x.first.second,x.second);
+        adj[x.first.second].emplace_back(x.first.first,x.second);
     }
-    for(auto & pair : ways) {
-        Vertex & v=vertices[pair.first.first-1];
-        Vertex & w=vertices[pair.first.second-1];
-        int weight=pair.second;
-        v.adj.push_front(weight);
-        w.adj.push_front(weight);
-        v.adj.push_front(w.no);
-        w.adj.push_front(v.no);
-    }
-
 
     // IMPLEMENT ME!
 }
 
 long long int HelpStudents::firstStudent() {
-    priority_queue<Vertex> pq;
-    vertices[0].dist=0;
-    pq.push(vertices[0]);
-    bool found=false;
-    while(!found) {
-        Vertex & first=vertices[pq.top().no-1];
-        first.isKnown=true;
-        if(first.no==destination) {
-            found=true;
-            return first.dist;
-        }
-        list<int> ::iterator it;
-        for (it = first.adj.begin(); it != first.adj.end(); it++) {
-            int x=*it;
-            Vertex & w=vertices[x-1];
-            if(!w.isKnown) {
-                it++;
-                long long int newDist=first.dist+*it;
-                if(newDist<w.dist)
-                    w.dist=newDist;
+    vector<long long int> dist(numberOfNodes+1,INF);
+    vector<bool> isOK(numberOfNodes+1, false);
+    priority_queue<pi, vector<pi>, greater<> > pq; /*first is dist , sec is node number*/
+    dist[1]=0;
+    pq.push(make_pair(0,1));
+    while(!pq.empty() && destination!=1) {
+        pair<int, int> temp=pq.top();
+        pq.pop();
+        int u=temp.second;
+        isOK[u]=true;
+        if(u==destination)
+            return dist[u];
+        for(auto it=adj[u].begin(); it!=adj[u].end(); it++) {
+            int v=it->first;
+            int weight=it->second;
+            if(!isOK[v] && dist[v]>dist[u]+weight) {
+                dist[v]=dist[u]+weight;
+                pq.push(make_pair(dist[v],v));
             }
-        }
-        pq=priority_queue<Vertex>();
-        for(int i=0; i<vertices.size(); i++) {
-            if(!vertices[i].isKnown)
-                pq.push(vertices[i]);
+
         }
     }
-    // IMPLEMENT ME!
+    return 0;
 }
 long long int HelpStudents::secondStudent() {
     // IMPLEMENT ME!
 }
 long long int HelpStudents::thirdStudent() {
-    queue<Vertex> q;
-    Vertex & first=vertices[0];
-    first.isKnown=true;
-    first.dist=0;
-    q.push(first);
-    while(!q.empty()) {
-        Vertex  & v=vertices[q.front().no-1];
+    vector<long long int> dist(numberOfNodes+1,INF);
+    queue<pair<long long int, int>> q;
+    dist[1]=0;
+    q.emplace(0,1);
+    while(!q.empty() && destination!=1 ) {
+        pair<long long int ,int> temp=q.front();
         q.pop();
-        for(list<int> ::iterator it=v.adj.begin(); it!=v.adj.end(); it++) {
-            int x=*it;
-            Vertex & w=vertices[x-1];
-            if(!w.isKnown) {
-                w.isKnown =true;
-                w.dist =v.dist+1;
-                if(w.no==destination) {
-                    cout<<"sfggag : "<<w.dist;
-                    return  w.dist;
-                }
-                q.push(w);
+        int u=temp.second;
+        for(auto it=adj[u].begin(); it!=adj[u].end(); it++) {
+            int v=it->first;
+            if(dist[v]==INF) {
+                dist[v]=dist[u]+1;
+                if(destination==v)
+                    return dist[v];
+                q.emplace(dist[v],v);
             }
-            it++;
         }
     }
-        return vertices[0].dist;
+    return 0;
     // IMPLEMENT ME!
 }
 long long int HelpStudents::fourthStudent() {
+    vector<long long int> dist(numberOfNodes+1,INF);
+    dist[1]=0;
+    long long int u=1;
+    while(true) {
+        if(u==destination) {
+            return dist[u];
+        }
+        long long int min=INF;
+        long long int next=INF;
+        for(auto it=adj[u].begin(); it!=adj[u].end(); it++) {
+            int d=it->second;
+            if(d<min) {
+                min=d;
+                next=it->first;
+            } else if(d==min && it->first<next)
+                next=it->first;
+        }if(min<INF) {
+            for(auto it =adj[u].begin(); it!=adj[u].end(); it++) {
+                if(it->first==next) {
+                    adj[u].erase(it);
+                    break;
+                }
+            }
+            for(auto it =adj[next].begin(); it!=adj[next].end(); it++) {
+                if(it->first==u) {
+                    adj[next].erase(it);
+                    break;
+                }
+            }
+            dist[next]=dist[u]+min;
+            u=next;
+
+        } else {
+            break;
+        }
+    }
+    return -1;
     // IMPLEMENT ME!
 }
 long long int HelpStudents::fifthStudent() {
     // IMPLEMENT ME!
 }
+
 
 // YOU CAN ADD YOUR HELPER FUNCTIONS
