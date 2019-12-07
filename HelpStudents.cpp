@@ -61,20 +61,28 @@ long long int HelpStudents::firstStudent() {
     return 0;
 }
 long long int HelpStudents::secondStudent() {
-    vector<long long int> parent(100001);
-    vector< long long int> key(100001,INF);
-    vector<bool> isOK(100001, false);
+    auto * parent = new long long int[100001];
+    auto * key = new long long int [100001] ;
+    for(int i=1; i<=numberOfNodes; i++)
+        key[i]=INF;
+    bool * isOK = new bool[100001];
     parent[1]=-1;
     key[1]=0;
-    priority_queue <p,vector<p>,greater <>>pq; //first is dist, sec.first is from, sec.sec is to
-    pq.emplace(0,-1,1);
-    while(!pq.empty()) {
-        auto x=pq.top(); pq.pop();
+    auto * pq = new priority_queue <p ,vector<p>, greater<> >; //first is dist, sec.first is from, sec.sec is to
+    pq->push(make_pair(0,make_pair(-1,1)));
+    while(!pq->empty()) {
+        auto x=pq->top(); pq->pop();
         long long int u=x.second.second;
         isOK[u]=true;
         if(u==destination) {
-            cout<<"@@@@@@@@@@@@@@@@@@ "<<key[u];
-            return key[u];
+            long long int x=0;
+            while(parent[u]!=-1) {
+                if(key[u]>x)
+                    x=key[u];
+                u=parent[u];
+            }
+            cout<<"@@@@@@@@@@@@@@@@@@ "<<x;
+            return x;
         }
         for(auto & a:adj[u]) {
             long long int neigh=a.first;
@@ -82,10 +90,16 @@ long long int HelpStudents::secondStudent() {
             if(!isOK[neigh] && weight<key[neigh]) {
                 key[neigh]=weight;
                 parent[neigh]=u;
-                pq.emplace(weight,u,neigh);
+                pq->push(make_pair(weight,make_pair(u,neigh)));
             }
         }
     }
+    delete[] parent;
+    delete[] key;
+    delete[] isOK;
+    delete pq;
+
+
     return -1;
 
     // IMPLEMENT ME!
