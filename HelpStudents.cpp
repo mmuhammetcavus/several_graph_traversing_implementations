@@ -15,14 +15,22 @@ Notes: Anything you want to say about your code that will be helpful in the grad
 using namespace std;
 const long long int INF = numeric_limits<long long int>::max();
 typedef pair<long long int, int> pi;
+typedef pair<long long int , pair <long long int,long long int> >  p;
 
 HelpStudents::HelpStudents(int  N, int  M, int K, const vector < pair< pair <int,int> , int > >& ways) {
     this->numberOfNodes=N; this->destination=K;
     this->adj=new list<pair<int ,int>>[numberOfNodes+1];
+    /*this->edges=new int * [numberOfNodes+1];
+    for(int i=0; i<numberOfNodes+1; i++) {
+        edges[i]=new int[numberOfNodes+1];
+    }*/
     for(auto & x : ways) {
         adj[x.first.first].emplace_back(x.first.second,x.second);
         adj[x.first.second].emplace_back(x.first.first,x.second);
+        //edges[x.first.first][x.first.second]=x.second;
+        //edges[x.first.second][x.first.first]=x.second;
     }
+
 
     // IMPLEMENT ME!
 }
@@ -53,6 +61,33 @@ long long int HelpStudents::firstStudent() {
     return 0;
 }
 long long int HelpStudents::secondStudent() {
+    vector<long long int> parent(100001);
+    vector< long long int> key(100001,INF);
+    vector<bool> isOK(100001, false);
+    parent[1]=-1;
+    key[1]=0;
+    priority_queue <p,vector<p>,greater <>>pq; //first is dist, sec.first is from, sec.sec is to
+    pq.emplace(0,-1,1);
+    while(!pq.empty()) {
+        auto x=pq.top(); pq.pop();
+        long long int u=x.second.second;
+        isOK[u]=true;
+        if(u==destination) {
+            cout<<"@@@@@@@@@@@@@@@@@@ "<<key[u];
+            return key[u];
+        }
+        for(auto & a:adj[u]) {
+            long long int neigh=a.first;
+            long long int weight=a.second;
+            if(!isOK[neigh] && weight<key[neigh]) {
+                key[neigh]=weight;
+                parent[neigh]=u;
+                pq.emplace(weight,u,neigh);
+            }
+        }
+    }
+    return -1;
+
     // IMPLEMENT ME!
 }
 long long int HelpStudents::thirdStudent() {
@@ -119,7 +154,12 @@ long long int HelpStudents::fourthStudent() {
 }
 long long int HelpStudents::fifthStudent() {
     // IMPLEMENT ME!
+    return -1;
 }
+
+
+
+
 
 
 // YOU CAN ADD YOUR HELPER FUNCTIONS

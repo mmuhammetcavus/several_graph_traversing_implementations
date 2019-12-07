@@ -1,4 +1,4 @@
-# Cmpe 250 Assignment 4
+_# Cmpe 250 Assignment 4
 
 * **Deadline:** 03.12.2019 Tuesday @23:00, very strict.
 * For your questions on the project, please contact with your student teaching assistant Kayacan Vesek via [kayacanvesek@gmail.com](mailto:kayacanvesek@gmail.com).
@@ -190,4 +190,4 @@ You are supposed to use the Git system provided to you for all projects. No othe
 * We will test your code with different input combinations, so we recommend you to test your code with different input combinations (written by you) as well.
 * Deadline is 3 December 2019, 23:00. 
 
-**Good luck!**
+**Good luck!**_

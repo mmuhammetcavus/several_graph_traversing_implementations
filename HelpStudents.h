@@ -8,6 +8,8 @@
 using namespace std;
 
 
+
+
 class HelpStudents{
 
 
@@ -18,9 +20,9 @@ public:
     long long int thirdStudent();
     long long int fourthStudent();
     long long int fifthStudent();
-    bool isPossible(int n, bool isOK[]);
     int numberOfNodes, destination;
     list<pair<int ,int>> * adj;
+    //int ** edges;
 
 
     // YOU CAN ADD YOUR HELPER FUNCTIONS AND MEMBER FIELDS
