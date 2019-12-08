@@ -167,8 +167,82 @@ long long int HelpStudents::fourthStudent() {
     // IMPLEMENT ME!
 }
 long long int HelpStudents::fifthStudent() {
+    /*
+    vector<long long int> passNo (100001,-2);
+    vector<long long int> dist (100001, INF);
+    vector<long long int> distMin(100001, INF);
+    dist[1]=0;
+    distMin[1]=0;
+    passNo[1]=0;
+    priority_queue <p,vector<p> , greater<>> pq;
+    pq.push(make_pair(dist[1],make_pair(1,passNo[1])));
+    while(!pq.empty()) {
+        auto x=pq.top(); pq.pop();
+        long long int distance=x.first;
+        long long int no=x.second.first;
+        long long int pass=x.second.second;
+        bool flag= false;
+        int n;
+        for(auto it:adj[no]) {
+            long long int neighbour=it.first;
+            n=neighbour;
+            flag=true;
+            long long int weight=it.second;
+            if(pass%3==2) {
+                weight=0;
+
+
+            }
+            dist[neighbour]=dist[no]+weight;
+            if(dist[neighbour]<distMin[neighbour])
+                distMin[neighbour]=dist[neighbour];
+            passNo[neighbour]=passNo[no]+1;
+
+            pq.push(make_pair(dist[neighbour],make_pair(neighbour,passNo[neighbour])));
+        }
+        if(flag) {
+            for(auto i =adj[no].begin(); i!=adj[no].end(); i++) {
+                if(i->first==n) {
+                    adj[no].erase(i);
+                    break;
+                }
+            }
+            for(auto i =adj[n].begin(); i!=adj[n].end(); i++) {
+                if(i->first==no) {
+                    adj[n].erase(i);
+                    break;
+                }
+            }
+        }
+    }
+     */
+    long long int ar[4][100001];
+    for(int i=0; i<4; i++) {
+        for(int j=0; j<=100000; j++) {
+            ar[i][j]=INF;
+        }
+    }
+    priority_queue <p,vector<p>, greater<>> pq;
+    pq.push(make_pair(0,make_pair(1,1)));
+    while(!pq.empty()) {
+        auto x=pq.top(); pq.pop();
+        long long int cost=x.first;
+        long long int v=x.second.first;
+        long long int step=x.second.second%3; if(step==0) step=3;
+        for(auto & it: adj[v]) {
+            long long int neighbour=it.first;
+            long long int weight=it.second;
+            if(step==3) weight=0;
+            if(cost+weight<ar[step][neighbour]) {
+                ar[step][neighbour]=cost+weight;
+                step==3 ? pq.push(make_pair(ar[step][neighbour],make_pair(neighbour,1))) : pq.push(make_pair(ar[step][neighbour],make_pair(neighbour,step+1)));
+            }
+
+
+        }
+    }
+    return min(ar[1][destination],min(ar[2][destination],ar[3][destination]));
     // IMPLEMENT ME!
-    return -1;
 }
 
 
